@@ -152,6 +152,10 @@ function create_img_with_src(src) {
 		});
 		let overlay_img = document.createElement('img');
 		overlay_img.src = img.src;
+		let text = document.createElement('p');
+		text.classList.add('overlay-text');
+		text.innerText = "Tryk hvor som helst for at lukke";
+		overlay.appendChild(text);
 		overlay.appendChild(overlay_img);
 		document.body.appendChild(overlay);
 	});
