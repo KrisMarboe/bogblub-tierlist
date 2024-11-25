@@ -15,7 +15,7 @@
 'use strict';
 
 const MAX_NAME_LEN = 200;
-const DEFAULT_TIERS = ['S','A','B','C','D','E','F'];
+const DEFAULT_TIERS = ['S','A','B','C','D','E','F', '???'];
 const TIER_COLORS = [
 	// from S to F
 	'#ff6666',
@@ -24,7 +24,8 @@ const TIER_COLORS = [
 	'#66ff66',
 	'#58c8f4',
 	'#5b76f4',
-	'#f45bed'
+	'#f45bed',
+	'#808080'
 ];
 
 let unique_id = 0;
@@ -53,10 +54,10 @@ function reset_row(row) {
 
 // Removes all rows from the tierlist, alongside their content.
 // Also empties the untiered images.
-function hard_reset_list() {
-	tierlist_div.innerHTML = '';
-	untiered_images.innerHTML = '';
-}
+// function hard_reset_list() {
+// 	tierlist_div.innerHTML = '';
+// 	untiered_images.innerHTML = '';
+// }
 
 // Places back all the tierlist content into the untiered pool.
 function soft_reset_list() {
@@ -75,43 +76,20 @@ window.addEventListener('load', () => {
 
 	headers_orig_min_width = all_headers[0][0].clientWidth;
 
+	// load jpg images from /books folder and add them to the untiered_images
+	
+	var files = [
+		"animal_farm", "babel", "dune", "foundation", "hærværk", "handmaids_tale", "lord_of_the_flies", "seven_eleven", "slottet", "the_hitchhikers_guide_to_the_galaxy"
+	]
+	for (var i in files) {
+		let img = create_img_with_src(`books/${files[i]}.jpg`);
+		untiered_images.appendChild(img);
+	}
+
 	make_accept_drop(document.querySelector('.images'));
 
-	bind_title_events();
-
-	// document.getElementById('load-img-input').addEventListener('input', (evt) => {
-	// 	// @Speed: maybe we can do some async stuff to optimize this
-	// 	let images = document.querySelector('.images');
-	// 	for (let file of evt.target.files) {
-	// 		let reader = new FileReader();
-	// 		reader.addEventListener('load', (load_evt) => {
-	// 			let img = create_img_with_src(load_evt.target.result);
-	// 			images.appendChild(img);
-	// 			unsaved_changes = true;
-	// 		});
-	// 		reader.readAsDataURL(file);
-	// 	}
-	// });
-
-	// Allow copy-pasting image from clipboard
-	// document.onpaste = (evt) => {
-	// 	let clip_data = evt.clipboardData || evt.originalEvent.clipboardData;
-	// 	let items = clip_data.items;
-	// 	let images = document.querySelector('.images');
-	// 	for (let item of items) {
-	// 		if (item.kind === 'file') {
-	// 			let blob = item.getAsFile();
-	// 			let reader = new FileReader();
-	// 			reader.onload = (load_evt) => {
-	// 				let img = create_img_with_src(load_evt.target.result);
-	// 				images.appendChild(img);
-	// 				unsaved_changes = true;
-	// 			};
-	// 			reader.readAsDataURL(blob);
-	// 		}
-	// 	}
-	// };
-
+	// bind_title_events();
+	
 	document.getElementById('reset-list-input').addEventListener('click', () => {
 		if (confirm('Reset Tierlist? (this will place all images back in the pool)')) {
 			soft_reset_list();
@@ -165,6 +143,19 @@ function create_img_with_src(src) {
 		dragged_image = evt.target;
 		dragged_image.classList.add("dragged");
 	});
+	img.addEventListener('click', (evt) => {
+		// Show overlay with image
+		let overlay = document.createElement('div');
+		overlay.classList.add('overlay');
+		overlay.addEventListener('click', (evt) => {
+			overlay.remove();
+		});
+		let overlay_img = document.createElement('img');
+		overlay_img.src = img.src;
+		overlay.appendChild(overlay_img);
+		document.body.appendChild(overlay);
+	});
+	
 	return img;
 }
 
@@ -206,37 +197,37 @@ function save_tierlist(filename) {
 	save(filename, JSON.stringify(serialized_tierlist));
 }
 
-function load_tierlist(serialized_tierlist) {
-	document.querySelector('.title-label').innerText = serialized_tierlist.title;
-	for (let idx in serialized_tierlist.rows) {
-		let ser_row = serialized_tierlist.rows[idx];
-		let elem = add_row(idx, ser_row.name);
+// function load_tierlist(serialized_tierlist) {
+// 	document.querySelector('.title-label').innerText = serialized_tierlist.title;
+// 	for (let idx in serialized_tierlist.rows) {
+// 		let ser_row = serialized_tierlist.rows[idx];
+// 		let elem = add_row(idx, ser_row.name);
 
-		for (let img_src of ser_row.imgs ?? []) {
-			let img = create_img_with_src(img_src);
-			let td = document.createElement('span');
-			td.classList.add('item');
-			td.appendChild(img);
-			let items_container = elem.querySelector('.items');
-			items_container.appendChild(td);
-		}
+// 		for (let img_src of ser_row.imgs ?? []) {
+// 			let img = create_img_with_src(img_src);
+// 			let td = document.createElement('span');
+// 			td.classList.add('item');
+// 			td.appendChild(img);
+// 			let items_container = elem.querySelector('.items');
+// 			items_container.appendChild(td);
+// 		}
 
-		elem.querySelector('label').innerText = ser_row.name;
-	}
-	recompute_header_colors();
+// 		elem.querySelector('label').innerText = ser_row.name;
+// 	}
+// 	recompute_header_colors();
 
-	if (serialized_tierlist.untiered) {
-		let images = document.querySelector('.images');
-		for (let img_src of serialized_tierlist.untiered) {
-			let img = create_img_with_src(img_src);
-			images.appendChild(img);
-		}
-	}
+// 	if (serialized_tierlist.untiered) {
+// 		let images = document.querySelector('.images');
+// 		for (let img_src of serialized_tierlist.untiered) {
+// 			let img = create_img_with_src(img_src);
+// 			images.appendChild(img);
+// 		}
+// 	}
 
-	resize_headers();
+// 	resize_headers();
 
-	unsaved_changes = false;
-}
+// 	unsaved_changes = false;
+// }
 
 function end_drag(evt) {
 	dragged_image?.classList.remove("dragged");
@@ -308,13 +299,13 @@ function make_accept_drop(elem) {
 // 	});
 // }
 
-function bind_title_events() {
-	let title_label = document.querySelector('.title-label');
-	let title_input = document.getElementById('title-input');
-	let title = document.querySelector('.title');
+// function bind_title_events() {
+// 	let title_label = document.querySelector('.title-label');
+// 	let title_input = document.getElementById('title-input');
+// 	let title = document.querySelector('.title');
 
-	// enable_edit_on_click(title, title_input, title_label);
-}
+// 	// enable_edit_on_click(title, title_input, title_label);
+// }
 
 function create_label_input(row, row_idx, row_name) {
 	let input = document.createElement('input');
