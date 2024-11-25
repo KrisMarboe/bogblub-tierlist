@@ -178,6 +178,13 @@ img.draggable.dragged, .button:active {
 	text-decoration: none;
 }
 
+.gh-link-fork {
+	position: absolute;
+	top: 25px;
+	color: #ccc;
+	text-decoration: none;
+}
+
 #trash {
 	position: absolute;
 	top: 5px;
