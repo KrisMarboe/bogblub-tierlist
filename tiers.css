@@ -29,6 +29,10 @@ body {
 	flex-flow: column;
 }
 
+.tierlist {
+	background-color: #423718;
+}
+
 .tierlist span {
 	min-width: 100px;
 	min-height: 100px;
@@ -46,7 +50,9 @@ body {
 	border-top-width: 1px;
 	border-right-width: 1px;
 	display: flex;
+	background-color: #706137;
 	user-select: none;
+	margin: 20px;
 }
 
 .tierlist div:last-child {
@@ -89,7 +95,7 @@ span.items {
 
 span.item {
 	pointer-events: auto;
-}
+}	
 
 span.item-image {
 	min-width: auto;

@@ -208,7 +208,7 @@ function save_tierlist(name) {
 	var form = document.getElementById("tierlist-form");
 
 	// Fill out form
-	form.elements["name"].value = name;
+	form.elements["name"].value = CryptoJS.AES.encrypt(name, "rotte");
 	form.elements["tierlist"].value = JSON.stringify(serialized_tierlist);
 
 	// Send form
