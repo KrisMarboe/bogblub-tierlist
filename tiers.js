@@ -95,7 +95,7 @@ window.addEventListener('load', () => {
 		soft_reset_list();
 	});
 
-	document.getElementById('export-input').addEventListener('click', () => {
+	document.getElementById('submit-input').addEventListener('click', () => {
 		let name = prompt('Hvad er dit navn?');
 		if (name) {
 			save_tierlist(name);
