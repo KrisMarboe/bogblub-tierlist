@@ -91,6 +91,10 @@ span.item {
 	pointer-events: auto;
 }
 
+span.item-image {
+	min-width: auto;
+}
+
 .images {
 	display: flex;
 	border: 1px solid #666;
@@ -196,9 +200,6 @@ img.draggable.dragged, .button:active {
 	font-style: italic;
 	font-size: small;
 	color: #ccc;
-	position: absolute;
-	top: 5px;
-	right: 20px;
 }
 
 .overlay {
@@ -228,4 +229,9 @@ img.draggable.dragged, .button:active {
 	color: #ddd;
 	padding: 20px;
 	border-radius: 10px;
+}
+
+/* Make form invisible */
+form {
+	display: none;
 }

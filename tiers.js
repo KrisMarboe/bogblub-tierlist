@@ -81,8 +81,9 @@ window.addEventListener('load', () => {
 	var files = [
 		"animal_farm", "babel", "dune", "foundation", "hærværk", "handmaids_tale", "lord_of_the_flies", "seven_eleven", "slottet", "the_hitchhikers_guide_to_the_galaxy"
 	]
+	var file_names = ["Animal Farm", "Babel", "Dune", "Foundation", "Hærværk", "The Handmaid's Tale", "Lord of the Flies", "Seven Eleven", "Slottet", "The Hitchhiker's Guide to the Galaxy"]
 	for (var i in files) {
-		let img = create_img_with_src(`books/${files[i]}.jpg`);
+		let img = create_img_with_src(`books/${files[i]}.jpg`, file_names[i]);
 		untiered_images.appendChild(img);
 	}
 
@@ -91,15 +92,15 @@ window.addEventListener('load', () => {
 	// bind_title_events();
 	
 	document.getElementById('reset-list-input').addEventListener('click', () => {
-		if (confirm('Reset Tierlist? (this will place all images back in the pool)')) {
+		if (confirm('Start forfra? Alle bøger ryger tilbage til bunden.')) {
 			soft_reset_list();
 		}
 	});
 
 	document.getElementById('export-input').addEventListener('click', () => {
-		let name = prompt('Please give a name to this tierlist');
+		let name = prompt('Hvad er dit navn?');
 		if (name) {
-			save_tierlist(`${name}.json`);
+			save_tierlist(name);
 		}
 	});
 
@@ -132,9 +133,10 @@ window.addEventListener('load', () => {
 	});
 });
 
-function create_img_with_src(src) {
+function create_img_with_src(src, alt) {
 	let img = document.createElement('img');
 	img.src = src;
+	img.alt = alt;
 	img.style.userSelect = 'none';
 	img.classList.add('draggable');
 	img.draggable = true;
@@ -163,6 +165,7 @@ function create_img_with_src(src) {
 	return img;
 }
 
+
 function save(filename, text) {
 	unsaved_changes = false;
 
@@ -175,7 +178,8 @@ function save(filename, text) {
 	document.body.removeChild(el);
 }
 
-function save_tierlist(filename) {
+function save_tierlist(name) {
+
 	let serialized_tierlist = {
 		title: document.querySelector('.title-label').innerText,
 		rows: [],
@@ -186,7 +190,7 @@ function save_tierlist(filename) {
 		});
 		serialized_tierlist.rows[i].imgs = [];
 		row.querySelectorAll('img').forEach((img) => {
-			serialized_tierlist.rows[i].imgs.push(img.src);
+			serialized_tierlist.rows[i].imgs.push(img.alt);
 		});
 	});
 
@@ -194,11 +198,23 @@ function save_tierlist(filename) {
 	if (untiered_imgs.length > 0) {
 		serialized_tierlist.untiered = [];
 		untiered_imgs.forEach((img) => {
-			serialized_tierlist.untiered.push(img.src);
+			serialized_tierlist.untiered.push(img.alt);
 		});
 	}
 
-	save(filename, JSON.stringify(serialized_tierlist));
+	// Fill out form and send with formspree.io
+
+	// Find form
+	var form = document.getElementById("tierlist-form");
+
+	// Fill out form
+	form.elements["name"].value = name;
+	form.elements["tierlist"].value = JSON.stringify(serialized_tierlist);
+
+	// Send form
+	form.submit();
+
+	// save(filename, JSON.stringify(serialized_tierlist));
 }
 
 // function load_tierlist(serialized_tierlist) {
@@ -272,6 +288,7 @@ function make_accept_drop(elem) {
 		}
 		let td = document.createElement('span');
 		td.classList.add('item');
+		td.classList.add("item-image");
 		td.appendChild(dragged_image);
 		let items_container = elem.querySelector('.items');
 		if (!items_container) {
