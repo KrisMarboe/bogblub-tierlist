@@ -15,7 +15,7 @@
 'use strict';
 
 const MAX_NAME_LEN = 200;
-const DEFAULT_TIERS = ['S','A','B','C','D','E','F', '???'];
+const DEFAULT_TIERS = ['S','A','B','C','D','E','F', 'EJ LÆST'];
 const TIER_COLORS = [
 	// from S to F
 	'#ff6666',
@@ -92,9 +92,7 @@ window.addEventListener('load', () => {
 	// bind_title_events();
 	
 	document.getElementById('reset-list-input').addEventListener('click', () => {
-		if (confirm('Start forfra? Alle bøger ryger tilbage til bunden.')) {
-			soft_reset_list();
-		}
+		soft_reset_list();
 	});
 
 	document.getElementById('export-input').addEventListener('click', () => {
@@ -125,12 +123,12 @@ window.addEventListener('load', () => {
 
 	// bind_trash_events();
 
-	window.addEventListener('beforeunload', (evt) => {
-		if (!unsaved_changes) return null;
-		var msg = "You have unsaved changes. Leave anyway?";
-		(evt || window.event).returnValue = msg;
-		return msg;
-	});
+	// window.addEventListener('beforeunload', (evt) => {
+	// 	if (!unsaved_changes) return null;
+	// 	var msg = "You have unsaved changes. Leave anyway?";
+	// 	(evt || window.event).returnValue = msg;
+	// 	return msg;
+	// });
 });
 
 function create_img_with_src(src, alt) {
