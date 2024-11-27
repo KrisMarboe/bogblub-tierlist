@@ -63,7 +63,11 @@ section {
 	background-image: url("images/wood_darkest.jpg");
 	background-size: cover;
 	user-select: none;
-	margin: 15px 15px 15px 15px;
+	margin: 10px 20px;
+}
+
+.tierlist div.row:first-child {
+	margin-top: 20px;
 }
 
 .tierlist div:last-child {
